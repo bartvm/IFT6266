@@ -20,9 +20,12 @@ fuel-convert dogs_vs_cats  # Convert the raw images into an HDF5 (numerical) dat
 Fuel was written to deal with out-of-memory datasets, streaming data, parallel on-the-fly preprocessing of data, etc. in mind, so take some time to read [the overview](fuel.readthedocs.org/en/latest/overview.html) in order to understand the basic terminology. As a quick pointer, consider the following example:
 
 ```python
+# Let's load and process the dataset
 from fuel.datasets.dogs_vs_cats import DogsVsCats
 from fuel.streams import DataStream
 from fuel.schemes import ShuffledScheme
+from fuel.transformers.image import RandomFixedSizeCrop
+from fuel.transformers import Flatten
 
 # Load the training set
 train = DogsVsCats(('train',), subset=slice(0, 20000))
@@ -39,12 +42,50 @@ stream = DataStream.default_stream(
 # to take random crops of size (32 x 32) from each image
 cropped_stream = RandomFixedSizeCrop(
     stream, (32, 32), which_sources=('image_features',))
+    
+# We'll use a simple MLP, so we need to flatten the images
+# from (channel, width, height) to simply (features,)
+flattened_stream = Flatten(
+    cropped_stream, which_sources=('image_features',))
+    
+# Create the Theano MLP
+import theano
+from theano import tensor
+import numpy
 
-# To train your network for 10 epochs, you can now do something like
-for epoch in range(10):
-    epoch_iterator = stream.get_epoch_iterator()
-    for batch in epoch_iterator:
-        train_network(batch)
+X = tensor.matrix('image_features')
+T = tensor.lmatrix('targets')
+
+W = theano.shared(
+    numpy.random.uniform(low=-0.01, high=0.01, size=(3072, 500)), 'W')
+b = theano.shared(numpy.zeros(500))
+V = theano.shared(
+    numpy.random.uniform(low=-0.01, high=0.01, size=(500, 2)), 'V')
+c = theano.shared(numpy.zeros(2))
+params = [W, b, V, c]
+
+H = tensor.nnet.sigmoid(tensor.dot(X, W) + b)
+Y = tensor.nnet.softmax(tensor.dot(H, V) + c)
+
+loss = tensor.nnet.categorical_crossentropy(Y, T.flatten()).mean()
+
+# Use Blocks to train this network
+from blocks.algorithms import GradientDescent, Scale
+from blocks.extensions import Printing
+from blocks.extensions.monitoring import TrainingDataMonitoring
+from blocks.main_loop import MainLoop
+
+algorithm = GradientDescent(cost=loss, parameters=params,
+                            step_rule=Scale(learning_rate=0.1))
+
+# We want to monitor the cost as we train
+loss.name = 'loss'
+extensions = [TrainingDataMonitoring([loss], every_n_batches=1),
+              Printing(every_n_batches=1)]
+
+main_loop = MainLoop(data_stream=flattened_stream, algorithm=algorithm,
+                     extensions=extensions)
+main_loop.run() 
 ```
 
 Note that the Dogs vs. Cats dataset only has a training set and a test set; you'll need to create your own validation set! This is why we selected a subset of 20,000 images of the 25,000 as our training set.
