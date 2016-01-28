@@ -49,6 +49,12 @@ flattened_stream = Flatten(
     cropped_stream, which_sources=('image_features',))
 ```
 
+Note that the Dogs vs. Cats dataset only has a training set and a test set; you'll need to create your own validation set! This is why we selected a subset of 20,000 images of the 25,000 as our training set.
+
+You'll need to extend this example a bit for it to work well; 32 x 32 crops are too small, but some of the images aren't any bigger. To deal with this you'll need to upscale the smaller images (see e.g. `fuel.transformers.image.MinimumImageDimensions`), but you might also want to downscale the bigger ones.
+
+You can download the original datasets from Kaggle or from here: [train](https://www.dropbox.com/s/s3u30quvpxqdbz6/train.zip?dl=1), [test](https://www.dropbox.com/s/21rwu6drnplsbkb/test1.zip?dl=1).
+
 ### Quick example with Blocks
 
 [Blocks](https://blocks.readthedocs.org/en/latest/) is a framework for training neural networks that is used a lot at MILA. It helps you build neural network models, apply optimization algorithms, monitor validation sets, plot your results, serialize your models, etc.
@@ -96,14 +102,9 @@ main_loop = MainLoop(data_stream=flattened_stream, algorithm=algorithm,
 main_loop.run() 
 ```
 
-Note that the Dogs vs. Cats dataset only has a training set and a test set; you'll need to create your own validation set! This is why we selected a subset of 20,000 images of the 25,000 as our training set.
+### First things to try
 
-You'll need to extend this example a bit for it to work well; 32 x 32 crops are too small, but some of the images aren't any bigger. To deal with this you'll need to upscale the smaller images (see e.g. `fuel.transformers.image.MinimumImageDimensions`), but you might also want to downscale the bigger ones.
-
-You can download the original datasets from Kaggle or from here: [train](https://www.dropbox.com/s/s3u30quvpxqdbz6/train.zip?dl=1), [test](https://www.dropbox.com/s/21rwu6drnplsbkb/test1.zip?dl=1).
-
-### Extensions
-
+* You'll want to use convolutional nets.
 * There is currently no transformer in Fuel that resizes images to a fixed size (i.e. make sure that the shortest size is N pixels). This might be a good idea to implement.
 * Resizing and cropping images can be CPU-intensive. Moreover, it is a good idea to to data augmentation on this dataset e.g. add rotations, distortions, etc. to make sure the network doesn't overfit. By default these operations are done in the same process that controls the training on the GPU (or CPU) which means that during the data processing no training is happening and vice versa. This isn't very efficient! Fuel has a "data server" which allows you to run training and data preprocessing/augmentation in parallel. Have a look at the tutorial [here](https://github.com/vdumoulin/fuel/blob/server_doc/docs/server.rst).
 
