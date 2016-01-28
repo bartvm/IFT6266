@@ -55,7 +55,7 @@ flattened_stream = Flatten(
 
 Blocks is a framework made for research, and isn't as plug-and-play as some other frameworks (e.g. [Keras](https://github.com/fchollet/keras)). As such, we don't expect you to use it. However, some parts such as the optimization algorithms and monitoring can save you some time. Have a look at [Blocks' introduction tutorial](https://blocks.readthedocs.org/en/latest/tutorial.html) to get you started and consider the following example which shows you how to optimize a Theano expression of a cost using Blocks.
 
-```
+```python
 # Create the Theano MLP
 import theano
 from theano import tensor
