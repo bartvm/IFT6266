@@ -52,3 +52,26 @@ Note that the Dogs vs. Cats dataset only has a training set and a test set; you'
 You'll need to extend this example a bit for it to work well; 32 x 32 crops are too small, but some of the images aren't any bigger. To deal with this you'll need to upscale the smaller images (see e.g. `fuel.transformers.image.MinimumImageDimensions`), but you might also want to downscale the bigger ones.
 
 You can download the original datasets from Kaggle or from here: [train](https://www.dropbox.com/s/s3u30quvpxqdbz6/train.zip?dl=1), [test](https://www.dropbox.com/s/21rwu6drnplsbkb/test1.zip?dl=1).
+
+## Spiritual Ascension Music
+
+The second dataset is a 3 hour long audio track from [a YouTube video](https://www.youtube.com/watch?v=XqaJ2Ol5cC4). For this too a Fuel wrapper is available, but you'll need to make sure to install the Python module `pafy` (use `pip install pafy`) and the `ffmpeg` package.
+
+On Linux you can probably use e.g. `sudo apt-get install ffmpeg` or `yum install ffmpeg` depending on your platform, while on OS X it's probably easiest to use [Homebrew](http://brew.sh/) (`brew install ffmpeg`). There are also [Windows builds](http://ffmpeg.zeranoe.com/builds/) available.
+
+```bash
+fuel-download youtube_audio --youtube-id XqaJ2Ol5cC4
+fuel-convert youtube_audio --youtube-id XqaJ2Ol5cC4
+```
+
+If you can't manage to install `ffmpeg`, you can also download the HDF5 file [directly from Dropbox]() and simply place it in your Fuel data path.
+
+```python
+from fuel.datasets.youtube_audio import YouTubeAudio
+data = YouTubeAudio('XqaJ2Ol5cC4')
+stream = data.get_example_stream()
+it = stream.get_epoch_iterator()
+sequence = next(it)
+```
+
+Note that this gives you the entire sequence as one batch. During training, you probably want to split up the sequence in smaller subsequences e.g. of length `N`. So you would have sequences `[T, T + N]` while having `[T + 1, T + N + 1]` as targets. To do this you will need to implement a Fuel transformer.
