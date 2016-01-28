@@ -130,3 +130,7 @@ sequence = next(it)
 ```
 
 Note that this gives you the entire sequence as one batch. During training, you probably want to split up the sequence in smaller subsequences e.g. of length `N`. So you would have sequences `[T, T + N]` while having `[T + 1, T + N + 1]` as targets. To do this you will need to implement a Fuel transformer.
+
+### Tips
+
+* Even if you don't use Blocks in order to construct your model, be sure to look at its implementations of e.g. the [LSTM](https://github.com/mila-udem/blocks/blob/master/blocks/bricks/recurrent.py#L419-L477) and [GRU](https://github.com/mila-udem/blocks/blob/master/blocks/bricks/recurrent.py#L568-L604) units; it's easy to get wrong!
