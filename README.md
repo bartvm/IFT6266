@@ -4,7 +4,7 @@ To help you get started with the IFT6266 class projects, we'll provide a snippet
 
 ## Dogs vs. Cats
 
-The Dogs vs. Cats dataset was originally part of [a Kaggle competition](https://www.kaggle.com/c/dogs-vs-cats). The competition page and [forums](https://www.kaggle.com/c/dogs-vs-cats/forums) will have more details on the dataset and approaches that people have tried.
+The Dogs vs. Cats dataset was originally part of [a Kaggle competition](https://www.kaggle.com/c/dogs-vs-cats). The competition page and [forums](https://www.kaggle.com/c/dogs-vs-cats/forums) will have more details on the dataset and approaches that people have tried. Also have a look at [the leaderboard](https://github.com/vdumoulin/ift6266h15/wiki/Class-Project-Leaderboard) from last year's class.
 
 [Fuel]() is a data-processing framework for machine learning that helps you download, read and process data for the training of machine learning algorithms. Fuel contains [a wrapper](https://github.com/mila-udem/fuel/pull/285) for the Dogs vs. Cats dataset. To get started with it, begin by following the [installation instructions](http://fuel.readthedocs.org/en/latest/setup.html). Afterwards, follow [the instructions](http://fuel.readthedocs.org/en/latest/built_in_datasets.html) for downloading a built-in dataset but use `dogs_vs_cats` instead of `mnist`. This will download the Dogs vs. Cats dataset for you and convert the JPEG images into a numerical HDF5 file (which can easily be viewed as NumPy arrays). The following commands should get you started:
 
