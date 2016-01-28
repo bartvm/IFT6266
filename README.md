@@ -134,3 +134,4 @@ Note that this gives you the entire sequence as one batch. During training, you 
 ### Tips
 
 * Even if you don't use Blocks in order to construct your model, be sure to look at its implementations of e.g. the [LSTM](https://github.com/mila-udem/blocks/blob/master/blocks/bricks/recurrent.py#L419-L477) and [GRU](https://github.com/mila-udem/blocks/blob/master/blocks/bricks/recurrent.py#L568-L604) units; it's easy to get wrong!
+* If you want to get started on a Fuel transformer that produces sets of subsequences, have a look at the [`NGrams` transformer](https://github.com/mila-udem/fuel/blob/master/fuel/transformers/text.py).
