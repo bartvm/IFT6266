@@ -47,7 +47,15 @@ cropped_stream = RandomFixedSizeCrop(
 # from (channel, width, height) to simply (features,)
 flattened_stream = Flatten(
     cropped_stream, which_sources=('image_features',))
-    
+```
+
+### Quick example with Blocks
+
+[Blocks](https://blocks.readthedocs.org/en/latest/) is a framework for training neural networks that is used a lot at MILA. It helps you build neural network models, apply optimization algorithms, monitor validation sets, plot your results, serialize your models, etc.
+
+Blocks is a framework made for research, and isn't as plug-and-play as some other frameworks (e.g. [Keras](https://github.com/fchollet/keras)). As such, we don't expect you to use it. However, some parts such as the optimization algorithms and monitoring can save you some time. Have a look at [Blocks' introduction tutorial](https://blocks.readthedocs.org/en/latest/tutorial.html) to get you started and consider the following example which shows you how to optimize a Theano expression of a cost using Blocks.
+
+```
 # Create the Theano MLP
 import theano
 from theano import tensor
@@ -93,6 +101,11 @@ Note that the Dogs vs. Cats dataset only has a training set and a test set; you'
 You'll need to extend this example a bit for it to work well; 32 x 32 crops are too small, but some of the images aren't any bigger. To deal with this you'll need to upscale the smaller images (see e.g. `fuel.transformers.image.MinimumImageDimensions`), but you might also want to downscale the bigger ones.
 
 You can download the original datasets from Kaggle or from here: [train](https://www.dropbox.com/s/s3u30quvpxqdbz6/train.zip?dl=1), [test](https://www.dropbox.com/s/21rwu6drnplsbkb/test1.zip?dl=1).
+
+### Extensions
+
+* There is currently no transformer in Fuel that resizes images to a fixed size (i.e. make sure that the shortest size is N pixels). This might be a good idea to implement.
+* Resizing and cropping images can be CPU-intensive. Moreover, it is a good idea to to data augmentation on this dataset e.g. add rotations, distortions, etc. to make sure the network doesn't overfit. By default these operations are done in the same process that controls the training on the GPU (or CPU) which means that during the data processing no training is happening and vice versa. This isn't very efficient! Fuel has a "data server" which allows you to run training and data preprocessing/augmentation in parallel. Have a look at the tutorial [here](https://github.com/vdumoulin/fuel/blob/server_doc/docs/server.rst).
 
 ## Spiritual Ascension Music
 
