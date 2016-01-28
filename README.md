@@ -64,7 +64,7 @@ fuel-download youtube_audio --youtube-id XqaJ2Ol5cC4
 fuel-convert youtube_audio --youtube-id XqaJ2Ol5cC4
 ```
 
-If you can't manage to install `ffmpeg`, you can also download the HDF5 file [directly from Dropbox]() and simply place it in your Fuel data path.
+If you can't manage to install `ffmpeg`, you can also download the HDF5 file [directly from Dropbox]() and simply place it in your Fuel data path. (The [WAVE file](https://www.dropbox.com/s/ytohwf0l0xulrxg/XqaJ2Ol5cC4.wav?dl=1) is also available.)
 
 ```python
 from fuel.datasets.youtube_audio import YouTubeAudio
